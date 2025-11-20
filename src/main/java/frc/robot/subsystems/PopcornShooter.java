@@ -33,7 +33,7 @@ public class PopcornShooter extends SubsystemBase{
             ResetMode.kResetSafeParameters, 
             PersistMode.kPersistParameters);
         m_PopShooterR.configure(
-            ShooterConfigs.shooterRConfig.follow(m_PopShooterL),
+            ShooterConfigs.shooterRConfig.follow(m_PopShooterL, true),
             ResetMode.kResetSafeParameters, 
             PersistMode.kPersistParameters);
         
@@ -42,7 +42,7 @@ public class PopcornShooter extends SubsystemBase{
     }
     public Command c_getPopcornShooterCommand() {
         return this.startEnd(() -> {
-            m_PopShooterL.set(.5);
+            m_PopShooterL.set(.4);
 
         }, 
         

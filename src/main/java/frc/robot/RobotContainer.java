@@ -64,7 +64,7 @@ public class RobotContainer {
    * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
    * PS4} controllers or
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * joysticks}.-
    */
   private void configureBindings() {
     // Set the A button to run the "RollerCommand" command with a fixed

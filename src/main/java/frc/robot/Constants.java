@@ -34,7 +34,7 @@ public final class Constants {
     public static final int OPERATOR_CONTROLLER_PORT = 1;
   }
   public static final class PopcornShooterConstants {
-    public static final int k_PopcornShooterLeft = 5;
-    public static final int k_PopcornShooterRight = 6;
+    public static final int k_PopcornShooterLeft = 6;
+    public static final int k_PopcornShooterRight = 5;
   }
 }
