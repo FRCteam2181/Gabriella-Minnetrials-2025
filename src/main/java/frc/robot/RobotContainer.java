@@ -6,12 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.PopcornIntake;
 import frc.robot.subsystems.PopcornShooter;
 
 /**
@@ -27,6 +29,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final PopcornShooter shooter = new PopcornShooter();
+  private final PopcornIntake intake = new PopcornIntake();
 
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
@@ -49,7 +52,7 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("Autonomous", new AutoCommand(driveSubsystem));
+    autoChooser.setDefaultOption("Autonomous", new RunCommand( () -> driveSubsystem.arcadeDrive(.5, 0), driveSubsystem).withTimeout(1));
   }
 
   /**
@@ -73,6 +76,8 @@ public class RobotContainer {
     // before
     operatorController.a()
         .whileTrue(shooter.c_getPopcornShooterCommand());
+    operatorController.b()
+        .whileTrue(intake.c_getPopcornIntakeCommand());
 
     // Set the default command for the drive subsystem to an instance of the
     // DriveCommand with the values provided by the joystick axes on the driver
@@ -81,8 +86,7 @@ public class RobotContainer {
     // value). Similarly for the X axis where we need to flip the value so the
     // joystick matches the WPILib convention of counter-clockwise positive
     driveSubsystem.setDefaultCommand(new DriveCommand(
-        () -> -driverController.getLeftY() *
-            (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
+        () -> -driverController.getLeftY(),
         () -> -driverController.getRightX(),
         driveSubsystem));
 

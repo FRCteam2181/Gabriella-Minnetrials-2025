@@ -7,6 +7,7 @@ import frc.robot.Configs.ShooterConfigs;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
@@ -20,10 +21,10 @@ public class PopcornShooter extends SubsystemBase{
 
     SparkFlex m_PopShooterL;
     SparkFlex m_PopShooterR;
-
-    SparkFlexConfig config;
+    SparkMax m_HopperAuger;
 
     public PopcornShooter() {
+        m_HopperAuger = new SparkMax(PopcornShooterConstants.k_PopcornAuger, MotorType.kBrushless);
         m_PopShooterL = new SparkFlex(PopcornShooterConstants.k_PopcornShooterLeft, MotorType.kBrushless);
         m_PopShooterR = new SparkFlex(PopcornShooterConstants.k_PopcornShooterRight, MotorType.kBrushless);
 
@@ -36,6 +37,10 @@ public class PopcornShooter extends SubsystemBase{
             ShooterConfigs.shooterRConfig.follow(m_PopShooterL, true),
             ResetMode.kResetSafeParameters, 
             PersistMode.kPersistParameters);
+        m_HopperAuger.configure(
+            ShooterConfigs.augerConfig,
+            ResetMode.kResetSafeParameters, 
+            PersistMode.kPersistParameters);
         
             
         
@@ -43,10 +48,12 @@ public class PopcornShooter extends SubsystemBase{
     public Command c_getPopcornShooterCommand() {
         return this.startEnd(() -> {
             m_PopShooterL.set(.4);
+            m_HopperAuger.set(.15);
 
         }, 
         
         () -> {
+        m_HopperAuger.set(0);
         m_PopShooterL.set(0);
             
         });
