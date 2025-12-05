@@ -47,7 +47,7 @@ public class PopcornShooter extends SubsystemBase{
     }
     public Command c_getPopcornShooterCommand() {
         return this.startEnd(() -> {
-            m_PopShooterL.set(.4);
+            m_PopShooterL.set(.45);
             m_HopperAuger.set(.15);
 
         }, 

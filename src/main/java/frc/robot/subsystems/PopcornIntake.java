@@ -35,7 +35,7 @@ public class PopcornIntake extends SubsystemBase{
     }
     public Command c_getPopcornIntakeCommand() {
         return this.startEnd(() -> {
-            m_PopIntake.set(.6);
+            m_PopIntake.set(.65);
 
         }, 
         
