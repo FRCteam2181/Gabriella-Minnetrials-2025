@@ -16,10 +16,12 @@ import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerRadianPerSecond;
 import static yams.mechanisms.SmartMechanism.gearbox;
 import static yams.mechanisms.SmartMechanism.gearing;
+import frc.robot.Configs.ShooterConfigs;
+import frc.robot.Constants.PopcornShooterConstants;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
+import com.revrobotics.spark.SparkFlex;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -44,12 +46,15 @@ public class ShooterSubsystem extends SubsystemBase
 {
   // TODO: Add detailed comments explaining the example, similar to the ExponentiallyProfiledArmSubsystem
 
-  private final SparkMax                   armMotor    = new SparkMax(1, MotorType.kBrushless);
+  private final SparkFlex                   shooterL    = new SparkFlex(PopcornShooterConstants.k_PopcornShooterLeft, MotorType.kBrushless);
+  private final SparkFlex                   m_PopShooterR    = new SparkFlex(PopcornShooterConstants.k_PopcornShooterRight, MotorType.kBrushless);]
+  private final SparkMax                    m_HopperAuger          = new SparkMax(PopcornShooterConstants.k_PopcornAuger, MotorType.kBrushless);
   //  private final SmartMotorControllerTelemetryConfig motorTelemetryConfig = new SmartMotorControllerTelemetryConfig()
 //          .withMechanismPosition()
 //          .withRotorPosition()
 //          .withMechanismLowerLimit()
 //          .withMechanismUpperLimit();
+
   private final SmartMotorControllerConfig motorConfig = new SmartMotorControllerConfig(this)
       .withClosedLoopController(0.00016541, 0, 0, RPM.of(5000), RotationsPerSecondPerSecond.of(2500))
       .withGearing(new MechanismGearing(GearBox.fromReductionStages(1, 1)))
@@ -65,7 +70,16 @@ public class ShooterSubsystem extends SubsystemBase
       .withFeedforward(new SimpleMotorFeedforward(0.27937, 0.089836, 0.014557))
       .withSimFeedforward(new SimpleMotorFeedforward(0.27937, 0.089836, 0.014557))
       .withControlMode(ControlMode.CLOSED_LOOP);
-  private final SmartMotorController       motor       = new SparkWrapper(armMotor, DCMotor.getNEO(1), motorConfig);
+
+   // m_PopShooterR.configure(
+     // ShooterConfigs.shooterRConfig.follow(m_PopShooterL, true),
+      //ResetMode.kResetSafeParameters, 
+      //PersistMode.kPersistParameters);
+    //m_HopperAuger.configure(
+      //ShooterConfigs.augerConfig,
+      //ResetMode.kResetSafeParameters, 
+      //PersistMode.kPersistParameters);
+  private final SmartMotorController       motor       = new SparkWrapper(shooterL, DCMotor.getNEO(1), motorConfig);
 
   private final FlyWheelConfig shooterConfig = new FlyWheelConfig(motor)
       .withDiameter(Inches.of(4))
