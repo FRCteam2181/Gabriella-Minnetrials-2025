@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoCommand;
@@ -15,6 +16,7 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.PopcornIntake;
 import frc.robot.subsystems.PopcornShooter;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -31,13 +33,14 @@ public class RobotContainer {
   private final PopcornShooter shooter = new PopcornShooter();
   private final PopcornIntake intake = new PopcornIntake();
 
+  private final Joystick operJoystick = new Joystick(1);
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
       OperatorConstants.DRIVER_CONTROLLER_PORT);
 
   // The operator's controller
-  private final CommandXboxController operatorController = new CommandXboxController(
-      OperatorConstants.OPERATOR_CONTROLLER_PORT);
+  //private final CommandXboxController operatorController = new CommandXboxController(
+    //  OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -73,11 +76,14 @@ public class RobotContainer {
     // Set the A button to run the "RollerCommand" command with a fixed
     // value ejecting the gamepiece while the button is held
 
-    // before
-    operatorController.a()
-        .whileTrue(shooter.c_getPopcornShooterCommand());
-    operatorController.b()
-        .whileTrue(intake.c_getPopcornIntakeCommand());
+    JoystickButton shooterButton = new JoystickButton(operJoystick, 7);
+    shooterButton.whileTrue(shooter.c_getPopcornShooterCommand());
+
+    JoystickButton intakeButton = new JoystickButton(operJoystick, 8);
+    intakeButton.whileTrue(intake.c_getPopcornIntakeCommand());
+
+    JoystickButton reverseButton = new JoystickButton(operJoystick, 9);
+    reverseButton.whileTrue(shooter.c_getReverseAugerCommand());
 
     // Set the default command for the drive subsystem to an instance of the
     // DriveCommand with the values provided by the joystick axes on the driver
@@ -104,5 +110,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
-  }
-}
+  }}
+

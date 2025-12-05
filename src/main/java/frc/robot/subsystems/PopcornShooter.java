@@ -58,4 +58,16 @@ public class PopcornShooter extends SubsystemBase{
             
         });
     }
+
+    public Command c_getReverseAugerCommand() {
+        return this.startEnd(() -> {
+            m_HopperAuger.set(-0.15);
+
+        }, 
+        
+        () -> {
+        m_HopperAuger.set(0);
+            
+        });
+    }
 }

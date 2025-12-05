@@ -36,7 +36,7 @@ public final class Constants {
   public static final class PopcornShooterConstants {
     public static final int k_PopcornShooterLeft = 6;
     public static final int k_PopcornShooterRight = 5;
-    public static final int k_PopcornIntake = 4; 
+    public static final int k_PopcornIntake = 8; 
     public static final int k_PopcornAuger = 7;
   }
 }
