@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -14,6 +15,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.PopcornIntake;
 import frc.robot.subsystems.PopcornShooter;
 import edu.wpi.first.wpilibj.Joystick;
@@ -30,7 +32,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class RobotContainer {
   // The robot's subsystems
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
-  private final PopcornShooter shooter = new PopcornShooter();
+  private final ShooterSubsystem shooter = new ShooterSubsystem();
   private final PopcornIntake intake = new PopcornIntake();
 
   private final Joystick operJoystick = new Joystick(1);
@@ -77,13 +79,15 @@ public class RobotContainer {
     // value ejecting the gamepiece while the button is held
 
     JoystickButton shooterButton = new JoystickButton(operJoystick, 7);
-    shooterButton.whileTrue(shooter.c_getPopcornShooterCommand());
+    shooterButton.whileTrue(shooter.setVelocity(RPM.of(4060.0),0.15));
+    shooterButton.whileFalse(shooter.setVelocity(RPM.of(0),0));
 
     JoystickButton intakeButton = new JoystickButton(operJoystick, 8);
     intakeButton.whileTrue(intake.c_getPopcornIntakeCommand());
 
     JoystickButton reverseButton = new JoystickButton(operJoystick, 9);
-    reverseButton.whileTrue(shooter.c_getReverseAugerCommand());
+    reverseButton.whileTrue(shooter.setVelocity(RPM.of(0), -.15));
+    reverseButton.whileFalse(shooter.setVelocity(RPM.of(0), 0));
 
     // Set the default command for the drive subsystem to an instance of the
     // DriveCommand with the values provided by the joystick axes on the driver
