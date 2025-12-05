@@ -26,6 +26,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.Supplier;
@@ -41,13 +42,15 @@ import yams.motorcontrollers.SmartMotorControllerConfig.ControlMode;
 import yams.motorcontrollers.SmartMotorControllerConfig.MotorMode;
 import yams.motorcontrollers.SmartMotorControllerConfig.TelemetryVerbosity;
 import yams.motorcontrollers.local.SparkWrapper;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
 public class ShooterSubsystem extends SubsystemBase
 {
   // TODO: Add detailed comments explaining the example, similar to the ExponentiallyProfiledArmSubsystem
 
   private final SparkFlex                   shooterL    = new SparkFlex(PopcornShooterConstants.k_PopcornShooterLeft, MotorType.kBrushless);
-  private final SparkFlex                   m_PopShooterR    = new SparkFlex(PopcornShooterConstants.k_PopcornShooterRight, MotorType.kBrushless);]
+  private final SparkFlex                   m_PopShooterR    = new SparkFlex(PopcornShooterConstants.k_PopcornShooterRight, MotorType.kBrushless);
   private final SparkMax                    m_HopperAuger          = new SparkMax(PopcornShooterConstants.k_PopcornAuger, MotorType.kBrushless);
   //  private final SmartMotorControllerTelemetryConfig motorTelemetryConfig = new SmartMotorControllerTelemetryConfig()
 //          .withMechanismPosition()
@@ -71,14 +74,7 @@ public class ShooterSubsystem extends SubsystemBase
       .withSimFeedforward(new SimpleMotorFeedforward(0.27937, 0.089836, 0.014557))
       .withControlMode(ControlMode.CLOSED_LOOP);
 
-   // m_PopShooterR.configure(
-     // ShooterConfigs.shooterRConfig.follow(m_PopShooterL, true),
-      //ResetMode.kResetSafeParameters, 
-      //PersistMode.kPersistParameters);
-    //m_HopperAuger.configure(
-      //ShooterConfigs.augerConfig,
-      //ResetMode.kResetSafeParameters, 
-      //PersistMode.kPersistParameters);
+
   private final SmartMotorController       motor       = new SparkWrapper(shooterL, DCMotor.getNEO(1), motorConfig);
 
   private final FlyWheelConfig shooterConfig = new FlyWheelConfig(motor)
@@ -89,17 +85,29 @@ public class ShooterSubsystem extends SubsystemBase
       .withSpeedometerSimulation(RPM.of(7500));
   private final FlyWheel       shooter       = new FlyWheel(shooterConfig);
 
-  public ShooterSubsystem() {}
+  public ShooterSubsystem() {
+
+    m_PopShooterR.configure(
+      ShooterConfigs.shooterRConfig.follow(shooterL, true),
+       ResetMode.kResetSafeParameters, 
+       PersistMode.kPersistParameters);
+     m_HopperAuger.configure(
+       ShooterConfigs.augerConfig,
+       ResetMode.kResetSafeParameters, 
+       PersistMode.kPersistParameters);
+
+  }
 
   public AngularVelocity getVelocity() {return shooter.getSpeed();}
 
-  public Command setVelocity(AngularVelocity speed) {return shooter.setSpeed(speed);}
+  public Command setVelocity(AngularVelocity speed, double augerSpeed) {return shooter.setSpeed(speed).alongWith(new RunCommand(()->m_HopperAuger.set(augerSpeed)));
+                                                                          }
 
-  public Command setDutyCycle(double dutyCycle) {return shooter.set(dutyCycle);}
+  public Command setDutyCycle(double dutyCycle, double augerSpeed) {return shooter.set(dutyCycle).alongWith(new RunCommand(()->m_HopperAuger.set(augerSpeed)));}
 
-  public Command setVelocity(Supplier<AngularVelocity> speed) {return shooter.setSpeed(speed);}
+  public Command setVelocity(Supplier<AngularVelocity> speed, double augerSpeed) {return shooter.setSpeed(speed).alongWith(new RunCommand(()->m_HopperAuger.set(augerSpeed)));}
 
-  public Command setDutyCycle(Supplier<Double> dutyCycle) {return shooter.set(dutyCycle);}
+  public Command setDutyCycle(Supplier<Double> dutyCycle, double augerSpeed) {return shooter.set(dutyCycle).alongWith(new RunCommand(()->m_HopperAuger.set(augerSpeed)));}
 
   public Command sysId() {return shooter.sysId(Volts.of(10), Volts.of(1).per(Second), Seconds.of(5));}
 
